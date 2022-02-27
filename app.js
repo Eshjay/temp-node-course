@@ -1,18 +1,32 @@
-const http = require('http');
+const {readFile} = require('fs');
+const { resolve } = require('path');
 
-const server = http.createServer((req, res)=>{
-    if(req.url === '/'){
-        console.log(req)
-        res.end('Welcome to our home page')
-    }
-    if(req.url === '/about'){
-        res.end('Here is our short history')
-    }
-    res.end(
-        `<h1>Oops!</h1>
-        <p>We can't seem to find the page your looking for</p>
-        <a href="/">Back Home</a>
-       `)
-})
+const getText = (path)=>{
+    return new Promise((resolve, reject)=>{
+        readFile(path, 'utf8', (err, data)=>{
+            if(err) {
+                reject(err)
+            }else{
+                resolve(data)
+            }
+            })
+    })
+}
 
-server.listen(5000);
+//getText('./content/subfolder/test.txt')
+//.then((result)=> console.log(result))
+//.catch((err)=>console.log(err))
+
+//with Async Await...
+
+const start = async ()=>{
+    try{
+        const first = await getText('./content/subfolder/test.txt')
+        const second = await getText('./content/subfolder/second.txt')
+        console.log(first, second);
+    }catch(error) {
+        console.log(error)
+    }
+}
+
+start();
